@@ -38,6 +38,8 @@ jobs:
         working-directory: /tmp/toki_build
         run: |
           flutter pub get
+          find /home/runner/.pub-cache -name "build.gradle*" -exec sed -i 's/compileSdkVersion 31/compileSdkVersion 36/g; s/compileSdk 31/compileSdk 36/g; s/compileSdk = 31/compileSdk = 36/g; s/compileSdkVersion 33/compileSdkVersion 36/g; s/compileSdk = 33/compileSdk = 36/g' {} +
+          sed -i 's/flutter.compileSdkVersion/36/g' /tmp/toki_build/android/app/build.gradle*
           flutter build apk --release --android-skip-build-dependency-validation
 
       - name: Upload APK
