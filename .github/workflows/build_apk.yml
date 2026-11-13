@@ -24,14 +24,19 @@ jobs:
           flutter-version: '3.24.0'
           channel: 'stable'
 
-      - name: Create Android Platform Files
-        run: flutter create . --platforms=android --org com.tokilite.app
+      - name: Prepare Clean Flutter Project
+        run: |
+          mkdir -p /tmp/toki_build
+          flutter create /tmp/toki_build --platforms=android --org com.tokilite.app --project-name toki_lite
+          cp -f pubspec.yaml /tmp/toki_build/pubspec.yaml
+          cp -rf lib/* /tmp/toki_build/lib/
 
       - name: Add Microphone Permissions
         run: |
-          sed -i 's|<application|<uses-permission android:name="android.permission.INTERNET"/>\n    <uses-permission android:name="android.permission.RECORD_AUDIO"/>\n    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>\n    <application|' android/app/src/main/AndroidManifest.xml
+          sed -i 's|<application|<uses-permission android:name="android.permission.INTERNET"/>\n    <uses-permission android:name="android.permission.RECORD_AUDIO"/>\n    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>\n    <application|' /tmp/toki_build/android/app/src/main/AndroidManifest.xml
 
       - name: Get Dependencies & Build APK
+        working-directory: /tmp/toki_build
         run: |
           flutter pub get
           flutter build apk --release
@@ -40,5 +45,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: Toki-Lite-APK
-          path: build/app/outputs/flutter-apk/app-release.apk
+          path: /tmp/toki_build/build/app/outputs/flutter-apk/app-release.apk
           
