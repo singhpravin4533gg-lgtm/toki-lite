@@ -32,6 +32,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final TextEditingController _appIdController = TextEditingController();
+  final TextEditingController _tokenController = TextEditingController();
   final TextEditingController _channelController =
       TextEditingController(text: 'toki_room_1');
 
@@ -39,15 +40,18 @@ class _HomePageState extends State<HomePage> {
     final appId = _appIdController.text.trim();
     if (appId.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-            content: Text('कृपया पहले अपनी Agora App ID डालें!')),
+        const SnackBar(content: Text('कृपया पहले अपनी Agora App ID डालें!')),
       );
       return;
     }
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => LiveRoomPage(appId: appId, channelName: roomName),
+        builder: (_) => LiveRoomPage(
+          appId: appId,
+          token: _tokenController.text.trim(),
+          channelName: roomName,
+        ),
       ),
     );
   }
@@ -61,7 +65,7 @@ class _HomePageState extends State<HomePage> {
         title: const Text('Toki Lite',
             style: TextStyle(fontWeight: FontWeight.bold)),
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -97,6 +101,15 @@ class _HomePageState extends State<HomePage> {
             ),
             const SizedBox(height: 12),
             TextField(
+              controller: _tokenController,
+              decoration: const InputDecoration(
+                labelText: 'Agora Temp Token डालें',
+                border: OutlineInputBorder(),
+                prefixIcon: Icon(Icons.security),
+              ),
+            ),
+            const SizedBox(height: 12),
+            TextField(
               controller: _channelController,
               decoration: const InputDecoration(
                 labelText: 'Room / Channel का नाम',
@@ -125,10 +138,15 @@ class _HomePageState extends State<HomePage> {
 
 class LiveRoomPage extends StatefulWidget {
   final String appId;
+  final String token;
   final String channelName;
 
-  const LiveRoomPage(
-      {super.key, required this.appId, required this.channelName});
+  const LiveRoomPage({
+    super.key,
+    required this.appId,
+    required this.token,
+    required this.channelName,
+  });
 
   @override
   State<LiveRoomPage> createState() => _LiveRoomPageState();
@@ -172,7 +190,7 @@ class _LiveRoomPageState extends State<LiveRoomPage> {
     await _engine!.setClientRole(role: ClientRoleType.clientRoleBroadcaster);
     await _engine!.enableAudio();
     await _engine!.joinChannel(
-      token: '',
+      token: widget.token,
       channelId: widget.channelName,
       uid: 0,
       options: const ChannelMediaOptions(),
