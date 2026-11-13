@@ -28,15 +28,9 @@ jobs:
           flutter create /tmp/toki_build --project-name toki_lite
           cp pubspec.yaml /tmp/toki_build/pubspec.yaml
           cp -r lib/* /tmp/toki_build/lib/
-          sed -i 's/id "org.jetbrains.kotlin.android" version "[^"]*"/id "org.jetbrains.kotlin.android" version "2.1.0"/' /tmp/toki_build/android/settings.gradle || true
-          sed -i 's/id("org.jetbrains.kotlin.android") version "[^"]*"/id("org.jetbrains.kotlin.android") version "2.1.0"/' /tmp/toki_build/android/settings.gradle.kts || true
-          python3 -c '
-          import glob, re
-          for path in glob.glob("/tmp/toki_build/android/app/build.gradle*"):
-              txt = open(path).read()
-              txt = re.sub(r"compileSdk\s*=?\s*flutter\.compileSdkVersion", "compileSdk = 36" if path.endswith(".kts") else "compileSdk 36", txt)
-              open(path, "w").write(txt)
-          '
+          sed -i 's/flutter.compileSdkVersion/36/g' /tmp/toki_build/android/app/build.gradle*
+          sed -i 's/compileSdk = 31/compileSdk = 36/g' /tmp/toki_build/android/app/build.gradle*
+          sed -i 's/compileSdkVersion 31/compileSdkVersion 36/g' /tmp/toki_build/android/app/build.gradle*
 
       - name: Add Microphone Permissions
         run: |
@@ -47,7 +41,7 @@ jobs:
         working-directory: /tmp/toki_build
         run: |
           flutter pub get
-          flutter build apk --release
+          flutter build apk --release --android-skip-build-dependency-validation
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
