@@ -37,6 +37,34 @@ jobs:
               open(f, "w").write(s)
           EOF
           python3 /tmp/fix_sdk.py
+          if [ -f /tmp/toki_build/android/build.gradle.kts ]; then
+            cat << 'EOF' >> /tmp/toki_build/android/build.gradle.kts
+
+          subprojects {
+              afterEvaluate {
+                  extensions.findByName("android")?.let { ext ->
+                      try {
+                          val m = ext.javaClass.getMethod("compileSdkVersion", Int::class.javaPrimitiveType)
+                          m.invoke(ext, 36)
+                      } catch (_: Exception) {}
+                  }
+              }
+          }
+          EOF
+          elif [ -f /tmp/toki_build/android/build.gradle ]; then
+            cat << 'EOF' >> /tmp/toki_build/android/build.gradle
+
+          subprojects {
+              afterEvaluate { project ->
+                  if (project.hasProperty("android")) {
+                      project.android {
+                          compileSdkVersion 36
+                      }
+                  }
+              }
+          }
+          EOF
+          fi
 
       - name: Add Microphone Permissions
         run: |
