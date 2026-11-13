@@ -154,7 +154,6 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // Profile & Avatar Card
             Container(
               padding: const EdgeInsets.all(14),
               decoration: BoxDecoration(
@@ -316,25 +315,21 @@ class _LiveRoomPageState extends State<LiveRoomPage> {
   late int _vipLevel;
   int _totalGifted = 0;
 
-  // Seat 0 = Host Top Seat, 1..8 = Guest Seats
   int _mySeat = 0;
   final Set<int> _lockedSeats = {};
   final List<int> _remoteUsers = [];
 
-  // Room Themes
   int _themeIndex = 0;
   final List<List<Color>> _roomThemes = [
-    [const Color(0xFF1A143B), const Color(0xFF2D1E6B)], // Royal Purple
-    [const Color(0xFF0D1B2A), const Color(0xFF1B263B)], // Midnight Blue
-    [const Color(0xFF2B1226), const Color(0xFF591C3E)], // Neon Rose
-    [const Color(0xFF1F1A0D), const Color(0xFF4A3810)], // Luxury Gold
+    [const Color(0xFF1A143B), const Color(0xFF2D1E6B)],
+    [const Color(0xFF0D1B2A), const Color(0xFF1B263B)],
+    [const Color(0xFF2B1226), const Color(0xFF591C3E)],
+    [const Color(0xFF1F1A0D), const Color(0xFF4A3810)],
   ];
 
-  // Floating Gift & Emoji Banner
   String? _activeGiftBanner;
   String? _floatingEmoji;
 
-  // Top Gifters Leaderboard
   final Map<String, int> _gifters = {
     'Aarav 👑': 450,
     'Riya 💎': 300,
@@ -345,7 +340,6 @@ class _LiveRoomPageState extends State<LiveRoomPage> {
     {'sender': 'System', 'text': '🎉 Toki Lite पार्टी रूम में आपका स्वागत है!'},
   ];
 
-  // Mini Ludo State
   int _diceValue = 6;
   int _currentTurn = 0;
   final List<int> _playerPositions = [0, 0, 0, 0];
@@ -357,7 +351,6 @@ class _LiveRoomPageState extends State<LiveRoomPage> {
     Colors.lightBlueAccent,
   ];
 
-  // Truth & Dare Prompts
   final List<String> _truthDareList = [
     '🎤 Truth: अपना सबसे पसंदीदा गाना 2 लाइन गाकर सुनाएँ!',
     '🔥 Dare: रूम में बैठे किसी दोस्त की तारीफ़ में शायरी बोलें!',
@@ -588,4 +581,13 @@ class _LiveRoomPageState extends State<LiveRoomPage> {
                               style: const TextStyle(color: Colors.white)),
                           Text('🪙 ${g['cost']}',
                               style: const TextStyle(
-                  
+                                  color: Colors.amber, fontSize: 12)),
+                        ],
+                      ),
+                    ),
+                  );
+                }).toList(),
+              ),
+            ),
+            const SizedBox(height: 10),
+          ],        
