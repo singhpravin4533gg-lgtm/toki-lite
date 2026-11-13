@@ -30,8 +30,13 @@ jobs:
           cp -r lib/* /tmp/toki_build/lib/
           sed -i 's/id "org.jetbrains.kotlin.android" version "[^"]*"/id "org.jetbrains.kotlin.android" version "2.1.0"/' /tmp/toki_build/android/settings.gradle || true
           sed -i 's/id("org.jetbrains.kotlin.android") version "[^"]*"/id("org.jetbrains.kotlin.android") version "2.1.0"/' /tmp/toki_build/android/settings.gradle.kts || true
-          sed -i 's/compileSdk = flutter.compileSdkVersion/compileSdk = 36/' /tmp/toki_build/android/app/build.gradle.kts || true
-          sed -i 's/compileSdk flutter.compileSdkVersion/compileSdk 36/' /tmp/toki_build/android/app/build.gradle || true
+          python3 -c '
+          import glob, re
+          for path in glob.glob("/tmp/toki_build/android/app/build.gradle*"):
+              txt = open(path).read()
+              txt = re.sub(r"compileSdk\s*=?\s*flutter\.compileSdkVersion", "compileSdk = 36" if path.endswith(".kts") else "compileSdk 36", txt)
+              open(path, "w").write(txt)
+          '
 
       - name: Add Microphone Permissions
         run: |
